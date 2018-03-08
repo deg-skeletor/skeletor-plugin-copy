@@ -9,8 +9,10 @@ function _setMockSrc(newmockSrc) {
     mockSrc = {...newmockSrc};
 }
 
-const existsSync = (dest) => {
-    return mockSrc[dest];
+const stat = (dest) => {
+    return Promise.resolve({
+        isDirectory: mockSrc[dest]
+    });
 };
 
 const mkdirSync = dest => {
@@ -29,7 +31,7 @@ const copyFile = (srcPath, destPath) => {
 };
 
 fsExtra._setMockSrc = _setMockSrc;
-fsExtra.existsSync = existsSync;
+fsExtra.stat = stat;
 fsExtra.mkdirSync = mkdirSync;
 fsExtra.readdir = readdir;
 fsExtra.copyFile = copyFile;

@@ -30,18 +30,28 @@ const run = config => {
 
 const copyDirectory = fileConfig => {
 
-    const directory = fse.existsSync(fileConfig.dest);
-    if (!directory) {
-        fse.mkdirSync(fileConfig.dest);
-    }
-    return fse.readdir(fileConfig.src)
-        .then(files => {
-            files.forEach(file => {
-                copyFile(fileConfig, file);
-            });
-        })
-        .catch(readErr => Promise.reject(readErr));
+    return fse.stat(fileConfig.dest).then(statResp => {
+        if (!statResp.isDirectory) {
+            fse.mkdirSync(fileConfig.dest);
+            return fse.readdir(fileConfig.src)
+                .then(files => {
+                    files.forEach(file => {
+                        copyFile(fileConfig, file);
+                    });
+                })
+                .catch(readErr => Promise.reject(readErr));
+        }
+        return fse.readdir(fileConfig.src)
+            .then(files => {
+                files.forEach(file => {
+                    copyFile(fileConfig, file);
+                });
+            })
+            .catch(readErr => Promise.reject(readErr));
+    });
 };
+
+
 
 const copyFile = (fileConfig, file) => {
     const srcFilepath = path.resolve(process.cwd(), fileConfig.src, file);
