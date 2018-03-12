@@ -44,7 +44,8 @@ const copyDirectory = fileConfig => {
     return checkDirectoryStatus(fileConfig.dest).then(() => {
         return fse.readdir(fileConfig.src)
             .then(files => {
-                files.forEach(file => copyFile(fileConfig, file));
+                const filePromises = files.map(file => copyFile(fileConfig, file));
+                return Promise.all(filePromises);
             });
     });
 };
