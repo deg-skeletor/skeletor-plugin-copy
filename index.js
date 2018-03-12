@@ -8,7 +8,8 @@ const run = config => {
 
         return Promise.all(promises)
             .then(() => {
-                const message = `${config.directories.length} ${config.directories.length === 1 ? 'directory' : 'directories'} processed`;
+                const descriptor = config.directories.length === 1 ? 'directory' : 'directories';
+                const message = `${config.directories.length} ${descriptor} processed`;
                 return {
                     status: 'complete',
                     message: message
