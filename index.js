@@ -22,10 +22,10 @@ const run = config => {
             });
     }
 
-    return {
+    return Promise.reject({
         status: 'error',
         error: 'Config directories is not found or not an array.'
-    };
+    });
 };
 
 const copyDirectory = fileConfig => {

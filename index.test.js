@@ -48,8 +48,9 @@ describe('handles troublesome configurations', () => {
             error: 'Config directories is not found or not an array.'
         };
 
-        const response = skeletorStaticFileCopier().run(config);
-        expect(response).toEqual(expectedResponse);
+        skeletorStaticFileCopier().run(config).then(response => {
+            expect(response).toEqual(expectedResponse);
+        });
     });
 
     test('throws error if directories is not an array', () => {
