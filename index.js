@@ -16,7 +16,6 @@ const run = config => {
                 };
             })
             .catch(error => {
-                console.log(error);
                 return {
                     status: 'error',
                     error: error
@@ -31,12 +30,14 @@ const run = config => {
 };
 
 const checkDirectoryStatus = dest => {
-    return fse.stat(dest).then(statResp => {
-        if (!statResp.isDirectory) {
-            return fse.mkdir(dest);
-        }
-        return Promise.resolve();
-    });
+    return fse.stat(dest)
+        .then(statResp => {
+            if (!statResp.isDirectory) {
+                return fse.mkdir(dest);
+            }
+            return Promise.resolve();
+        })
+        .catch(() => fse.mkdir(dest));
 };
 
 const copyDirectory = fileConfig => {
@@ -47,8 +48,6 @@ const copyDirectory = fileConfig => {
             });
     });
 };
-
-
 
 const copyFile = (fileConfig, file) => {
     const srcFilepath = path.resolve(process.cwd(), fileConfig.src, file);
