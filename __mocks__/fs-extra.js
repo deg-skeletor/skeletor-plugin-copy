@@ -9,7 +9,7 @@ function _setMockSrc(newmockSrc) {
     mockSrc = {...newmockSrc};
 }
 
-const stat = (dest) => {
+const stat = dest => {
     return Promise.resolve({
         isDirectory: mockSrc[dest]
     });
