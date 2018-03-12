@@ -8,6 +8,11 @@ const srcFilepath2 = 'src/skeletor2';
 const destFilepath2 = 'dest/skeletor2';
 const content2 = ['content1.txt'];
 
+const errorResponse = {
+    status: 'error',
+    error: 'Config directories is not found or not an array.'
+};
+
 jest.mock('path');
 
 beforeEach(() => {
@@ -43,39 +48,48 @@ describe('handles troublesome configurations', () => {
     test('run() handles malformed config object', () => {
         const config = {};
 
-        const expectedResponse = {
-            status: 'error',
-            error: 'Config directories is not found or not an array.'
-        };
-
         skeletorStaticFileCopier().run(config).then(response => {
-            expect(response).toEqual(expectedResponse);
+            expect(response).toEqual(errorResponse);
         });
     });
 
-    test('throws error if directories is not an array', () => {
-        const expectedResponse = {
-            status: 'error',
-            error: 'Config directories is not found or not an array.'
-        };
+    describe('throws error if directories is', () => {
 
-        let config = {
-            directories: {}
-        };
-        let response = skeletorStaticFileCopier().run(config);
-        expect(response).toEqual(expectedResponse);
+        test('empty obj', () => {
+            const config = {
+                directories: {}
+            };
+            skeletorStaticFileCopier().run(config).then(response => {
+                expect(response).toEqual(errorResponse);
+            });
+        });
 
-        config = {directories: 'test'};
-        response = skeletorStaticFileCopier().run(config);
-        expect(response).toEqual(expectedResponse);
+        test('a string', () => {
+            const config = {
+                directories: 'test'
+            };
+            skeletorStaticFileCopier().run(config).then(response => {
+                expect(response).toEqual(errorResponse);
+            });
+        });
 
-        config = {directories: 4};
-        response = skeletorStaticFileCopier().run(config);
-        expect(response).toEqual(expectedResponse);
+        test('a number', () => {
+            const config = {
+                directories: 4
+            };
+            skeletorStaticFileCopier().run(config).then(response => {
+                expect(response).toEqual(errorResponse);
+            });
+        });
 
-        config = {directories: true};
-        response = skeletorStaticFileCopier().run(config);
-        expect(response).toEqual(expectedResponse);
+        test('a boolean', () => {
+            const config = {
+                directories: false
+            };
+            skeletorStaticFileCopier().run(config).then(response => {
+                expect(response).toEqual(errorResponse);
+            });
+        });
     });
 
     test('errors if src is not a directory', () => {
