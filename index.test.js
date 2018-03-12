@@ -12,11 +12,13 @@ const errorResponse = {
     status: 'error',
     error: 'Config directories is not found or not an array.'
 };
+let fseInstance;
 
 jest.mock('path');
 
 beforeEach(() => {
-    require('fs-extra')._setMockSrc({
+    fseInstance = require('fs-extra');
+    fseInstance._setMockSrc({
         [srcFilepath1]: content1,
         [srcFilepath2]: content2
     });
@@ -136,7 +138,7 @@ describe('handles troublesome configurations', () => {
         // expect.assertions(1);
         skeletorStaticFileCopier().run(config).then(response => {
             expect(response).toEqual(expectedResponse);
-            const destinationDir = require('fs-extra').mockDest[fakeDirectory];
+            const destinationDir = fseInstance.mockDest[fakeDirectory];
             expect(destinationDir).toEqual(expectedDir);
         });
     });
@@ -158,12 +160,11 @@ describe('copies directories', () => {
             message: `${config.directories.length} ${config.directories.length === 1 ? 'directory' : 'directories'} processed`
         };
 
-        const expectedDir = content2;
+        const expectedDir = content1;
 
-        // expect.assertions(1);
         skeletorStaticFileCopier().run(config).then(response => {
             expect(response).toEqual(expectedResponse);
-            const destinationDir = require('fs-extra').mockDest[destFilepath1];
+            const destinationDir = fseInstance.mockDest[destFilepath1];
             expect(destinationDir).toEqual(expectedDir);
         });
 
@@ -191,13 +192,12 @@ describe('copies directories', () => {
         const expectedDir1 = content1;
         const expectedDir2 = content2;
 
-        // expect.assertions(1);
         skeletorStaticFileCopier().run(config).then(response => {
             expect(response).toEqual(expectedResponse);
-            let destinationDir = require('fs-extra').mockDest[destFilepath1];
+            let destinationDir = fseInstance.mockDest[destFilepath1];
             expect(destinationDir).toEqual(expectedDir1);
 
-            destinationDir = require('fs-extra').mockDest[destFilepath2];
+            destinationDir = fseInstance.mockDest[destFilepath2];
             expect(destinationDir).toEqual(expectedDir2);
         });
     });

@@ -36,5 +36,6 @@ fsExtra.stat = stat;
 fsExtra.mkdir = mkdir;
 fsExtra.readdir = readdir;
 fsExtra.copyFile = copyFile;
-
+fsExtra.mockSrc = mockSrc;
+fsExtra.mockDest = mockDest;
 module.exports = fsExtra;
