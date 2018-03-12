@@ -29,19 +29,18 @@ const run = config => {
     });
 };
 
+const checkDirectoryStatus = dest => {
+    return fse.stat(dest).then(statResp => {
+        if (!statResp.isDirectory) {
+            return fse.mkdir(dest);
+        }
+        return Promise.resolve();
+    });
+};
+
 const copyDirectory = fileConfig => {
 
-    return fse.stat(fileConfig.dest).then(statResp => {
-        if (!statResp.isDirectory) {
-            fse.mkdirSync(fileConfig.dest);
-            return fse.readdir(fileConfig.src)
-                .then(files => {
-                    files.forEach(file => {
-                        copyFile(fileConfig, file);
-                    });
-                })
-                .catch(readErr => Promise.reject(readErr));
-        }
+    return checkDirectoryStatus(fileConfig.dest).then(() => {
         return fse.readdir(fileConfig.src)
             .then(files => {
                 files.forEach(file => {

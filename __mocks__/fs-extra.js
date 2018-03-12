@@ -15,8 +15,9 @@ const stat = (dest) => {
     });
 };
 
-const mkdirSync = dest => {
+const mkdir = dest => {
     mockDest[dest] = [];
+    Promise.resolve();
 };
 
 const readdir = directory => {
@@ -32,7 +33,7 @@ const copyFile = (srcPath, destPath) => {
 
 fsExtra._setMockSrc = _setMockSrc;
 fsExtra.stat = stat;
-fsExtra.mkdirSync = mkdirSync;
+fsExtra.mkdir = mkdir;
 fsExtra.readdir = readdir;
 fsExtra.copyFile = copyFile;
 
