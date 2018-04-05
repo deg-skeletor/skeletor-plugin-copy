@@ -1,10 +1,11 @@
 const fse = require('fs-extra');
 const path = require('path');
+const glob = require('globby');
 
 const run = config => {
 
     if (config.directories && Array.isArray(config.directories)) {
-        const promises = config.directories.map(directoryConfig => copyDirectory(directoryConfig));
+        const promises = config.directories.map(directoryConfig => copyDirectory(directoryConfig, directoryConfig.dest));
 
         return Promise.all(promises)
             .then(() => {
@@ -16,6 +17,7 @@ const run = config => {
                 };
             })
             .catch(error => {
+                console.log(error);
                 return {
                     status: 'error',
                     error: error
@@ -30,19 +32,13 @@ const run = config => {
 };
 
 const checkDirectoryStatus = dest => {
-    return fse.stat(dest)
-        .then(statResp => {
-            if (!statResp.isDirectory) {
-                return fse.mkdir(dest);
-            }
-            return Promise.resolve();
-        })
-        .catch(() => fse.mkdir(dest));
+    return fse.ensureDir(dest)
+        .then(() => Promise.resolve());
 };
 
-const copyDirectory = fileConfig => {
-    return checkDirectoryStatus(fileConfig.dest).then(() => {
-        return fse.readdir(fileConfig.src)
+const copyDirectory = (fileConfig, dest) => {
+    return checkDirectoryStatus(dest).then(() => {
+        return glob(`${fileConfig.src}${fileConfig.regEx || ''}`)
             .then(files => {
                 const filePromises = files.map(file => copyFile(fileConfig, file));
                 return Promise.all(filePromises);
@@ -51,9 +47,10 @@ const copyDirectory = fileConfig => {
 };
 
 const copyFile = (fileConfig, file) => {
-    const srcFilepath = path.resolve(process.cwd(), fileConfig.src, file);
-    const destFilepath = path.resolve(process.cwd(), fileConfig.dest, file);
-    return fse.copyFile(srcFilepath, destFilepath);
+    const srcFilepath = path.resolve(process.cwd(), file);
+    const filePath = file.replace(fileConfig.src, '');
+    const destFilepath = path.resolve(process.cwd(), fileConfig.dest) + filePath;
+    return fse.copy(srcFilepath, destFilepath);
 };
 
 module.exports = skeletorStaticFileCopier = () => (

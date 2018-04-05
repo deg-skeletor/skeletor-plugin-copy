@@ -74,3 +74,6 @@ adds file system methods including ones that are not in the native `fs` module
 
 [path](https://nodejs.org/docs/latest/api/path.html)
 a module that provides utilities for working with file and directory paths
+
+[globby](https://github.com/sindresorhus/globby)
+a promised-based module that matches files using patterns
