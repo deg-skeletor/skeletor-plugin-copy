@@ -36,9 +36,22 @@ const checkDirectoryStatus = dest => {
         .then(() => Promise.resolve());
 };
 
+function getSourceDir(srcPath) {
+    const srcPaths = srcPath.split('/');
+    let retVal = srcPaths;
+    srcPaths.forEach((path, indx) => {
+        if (!glob.hasMagic(path)) {
+            const endIndx = indx + 1;
+            retVal = srcPaths.slice(0, endIndx).join('/');
+        }
+    });
+    return retVal;
+}
+
 const copyDirectory = (fileConfig, dest) => {
+    fileConfig.basePath = getSourceDir(fileConfig.src);
     return checkDirectoryStatus(dest).then(() => {
-        return glob(`${fileConfig.src}${fileConfig.regEx || ''}`)
+        return glob(`${fileConfig.src}`)
             .then(files => {
                 const filePromises = files.map(file => copyFile(fileConfig, file));
                 return Promise.all(filePromises);
@@ -48,7 +61,7 @@ const copyDirectory = (fileConfig, dest) => {
 
 const copyFile = (fileConfig, file) => {
     const srcFilepath = path.resolve(process.cwd(), file);
-    const filePath = file.replace(fileConfig.src, '');
+    const filePath = file.replace(fileConfig.basePath, '');
     const destFilepath = path.resolve(process.cwd(), fileConfig.dest) + filePath;
     return fse.copy(srcFilepath, destFilepath);
 };
