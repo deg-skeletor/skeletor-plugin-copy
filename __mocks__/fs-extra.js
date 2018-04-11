@@ -10,21 +10,12 @@ function _setMockSrc(newmockSrc) {
 }
 
 
-const ensureDir = dest => {
-    if (!mockDest[dest]) {
-        mockDest[dest] = [];
-    }
-    return Promise.resolve();
-};
-
-
 const copy = (srcPath, destPath) => {
     mockDest[destPath] = mockSrc[srcPath];
     return Promise.resolve(true);
 };
 
 fsExtra._setMockSrc = _setMockSrc;
-fsExtra.ensureDir = ensureDir;
 fsExtra.copy = copy;
 fsExtra.mockSrc = mockSrc;
 fsExtra.mockDest = mockDest;

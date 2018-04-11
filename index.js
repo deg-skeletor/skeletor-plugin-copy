@@ -5,7 +5,7 @@ const glob = require('globby');
 const run = config => {
 
     if (config.directories && Array.isArray(config.directories)) {
-        const promises = config.directories.map(directoryConfig => copyDirectory(directoryConfig, directoryConfig.dest));
+        const promises = config.directories.map(directoryConfig => copyDirectory(directoryConfig));
 
         return Promise.all(promises)
             .then(() => {
@@ -31,11 +31,13 @@ const run = config => {
     });
 };
 
-const checkDirectoryStatus = dest => {
-    return fse.ensureDir(dest)
-        .then(() => Promise.resolve());
-};
-
+/**
+ * 
+ * @param {String} srcPath the full src path from the config
+ * This function finds the base path which is the path before any glob syntax is used
+ * This helps parse the file path in the copyFile method
+ * @returns {String} base path (the path before any glob syntx is used)
+ */
 function getSourceDir(srcPath) {
     const srcPaths = srcPath.split('/');
     let retVal = srcPaths;
@@ -48,14 +50,29 @@ function getSourceDir(srcPath) {
     return retVal;
 }
 
-const copyDirectory = async (fileConfig, dest) => {
+/**
+ *
+ * @param {Object} fileConfig config object from project
+ * this method gets all files in src (taking into account globbing syntax)
+ * it then calls the copyFile method to copy each file in directory
+ * @returns {Promise} a promise of all copyFile promises
+ */
+const copyDirectory = async (fileConfig) => {
     fileConfig.basePath = getSourceDir(fileConfig.src);
-    await checkDirectoryStatus(dest);
     const filePaths = await glob(`${fileConfig.src}`);
     const filePromises = filePaths.map(file => copyFile(fileConfig, file));
     return Promise.all(filePromises);
 };
 
+/**
+ * 
+ * @param {Object} fileConfig config object from project
+ * @param {String} file path to file in src directory
+ * this method uses the source file path, removes the base src path to get the file name with any sub-directories
+ * it copies the file to the destination directory
+ * fse.copy will create directories in the destination if they do not exist
+ * @returns {Promise} promise representing status of file copy
+ */
 const copyFile = (fileConfig, file) => {
     const srcFilepath = path.resolve(process.cwd(), file);
     const filePath = file.replace(fileConfig.basePath, '');

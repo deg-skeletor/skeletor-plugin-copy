@@ -40,7 +40,7 @@ The `directories` parameter is a list of objects detailing the directories to be
 **src**
 Type: `String`
 
-The path to the source directory to be copied.
+The path to the source directory to be copied. This path can contain globbing [syntax](https://github.com/sindresorhus/globby#globbing-patterns).
 
 **dest**
 
