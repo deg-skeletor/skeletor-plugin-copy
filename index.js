@@ -57,10 +57,13 @@ function getSourceDir(srcPath) {
  * it then calls the copyFile method to copy each file in directory
  * @returns {Promise} a promise of all copyFile promises
  */
-const copyDirectory = async (fileConfig) => {
-    fileConfig.basePath = getSourceDir(fileConfig.src);
-    const filePaths = await glob(`${fileConfig.src}`);
-    const filePromises = filePaths.map(file => copyFile(fileConfig, file));
+const copyDirectory = async fileConfig => {
+    const config = {
+        ...fileConfig,
+        basePath: getSourceDir(fileConfig.src)
+    };
+    const filePaths = await glob(config.src);
+    const filePromises = filePaths.map(file => copyFile(config, file));
     return Promise.all(filePromises);
 };
 
