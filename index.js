@@ -38,7 +38,7 @@ const run = config => {
  * This helps parse the file path in the copyFile method
  * @returns {String} base path (the path before any glob syntx is used)
  */
-function getSourceDir(srcPath) {
+const getSourceDir = srcPath => {
     const srcPaths = srcPath.split(path.sep);
     let retVal = srcPaths;
     srcPaths.forEach((srcPath, indx) => {
@@ -48,7 +48,7 @@ function getSourceDir(srcPath) {
         }
     });
     return retVal;
-}
+};
 
 /**
  *
