@@ -48,15 +48,12 @@ function getSourceDir(srcPath) {
     return retVal;
 }
 
-const copyDirectory = (fileConfig, dest) => {
+const copyDirectory = async (fileConfig, dest) => {
     fileConfig.basePath = getSourceDir(fileConfig.src);
-    return checkDirectoryStatus(dest).then(() => {
-        return glob(`${fileConfig.src}`)
-            .then(files => {
-                const filePromises = files.map(file => copyFile(fileConfig, file));
-                return Promise.all(filePromises);
-            });
-    });
+    await checkDirectoryStatus(dest);
+    const filePaths = await glob(`${fileConfig.src}`);
+    const filePromises = filePaths.map(file => copyFile(fileConfig, file));
+    return Promise.all(filePromises);
 };
 
 const copyFile = (fileConfig, file) => {
