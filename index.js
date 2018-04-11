@@ -39,12 +39,12 @@ const run = config => {
  * @returns {String} base path (the path before any glob syntx is used)
  */
 function getSourceDir(srcPath) {
-    const srcPaths = srcPath.split('/');
+    const srcPaths = srcPath.split(path.sep);
     let retVal = srcPaths;
-    srcPaths.forEach((path, indx) => {
-        if (!glob.hasMagic(path)) {
+    srcPaths.forEach((srcPath, indx) => {
+        if (!glob.hasMagic(srcPath)) {
             const endIndx = indx + 1;
-            retVal = srcPaths.slice(0, endIndx).join('/');
+            retVal = path.join(...srcPaths.slice(0, endIndx));
         }
     });
     return retVal;
