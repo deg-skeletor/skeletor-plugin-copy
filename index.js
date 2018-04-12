@@ -79,7 +79,7 @@ const copyFile = (fileConfig, file) => {
     const srcFilepath = path.resolve(process.cwd(), file);
     const filePath = fileConfig.basePath ?
         file.replace(fileConfig.basePath, '') :
-        `/${file}`;
+        `${path.sep}${file}`;
     const destFilepath = path.resolve(process.cwd(), fileConfig.dest) + filePath;
     return fse.copy(srcFilepath, destFilepath);
 };
