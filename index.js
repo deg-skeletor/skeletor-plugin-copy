@@ -1,5 +1,6 @@
 const fse = require('fs-extra');
 const path = require('path');
+const glob = require('globby');
 
 const run = config => {
 
@@ -16,6 +17,7 @@ const run = config => {
                 };
             })
             .catch(error => {
+                console.log(error);
                 return {
                     status: 'error',
                     error: error
@@ -29,31 +31,56 @@ const run = config => {
     });
 };
 
-const checkDirectoryStatus = dest => {
-    return fse.stat(dest)
-        .then(statResp => {
-            if (!statResp.isDirectory) {
-                return fse.mkdir(dest);
-            }
-            return Promise.resolve();
-        })
-        .catch(() => fse.mkdir(dest));
-};
-
-const copyDirectory = fileConfig => {
-    return checkDirectoryStatus(fileConfig.dest).then(() => {
-        return fse.readdir(fileConfig.src)
-            .then(files => {
-                const filePromises = files.map(file => copyFile(fileConfig, file));
-                return Promise.all(filePromises);
-            });
+/**
+ * 
+ * @param {String} srcPath the full src path from the config
+ * This function finds the base path which is the path before any glob syntax is used
+ * This helps parse the file path in the copyFile method
+ * @returns {String} base path (the path before any glob syntx is used)
+ */
+const getSourceDir = srcPath => {
+    const srcPaths = srcPath.split(path.sep);
+    let retVal = srcPaths;
+    srcPaths.forEach((srcPath, indx) => {
+        if (!glob.hasMagic(srcPath)) {
+            const endIndx = indx + 1;
+            retVal = path.join(...srcPaths.slice(0, endIndx));
+        }
     });
+    return retVal;
 };
 
+/**
+ *
+ * @param {Object} fileConfig config object from project
+ * this method gets all files in src (taking into account globbing syntax)
+ * it then calls the copyFile method to copy each file in directory
+ * @returns {Promise} a promise of all copyFile promises
+ */
+const copyDirectory = async fileConfig => {
+    const config = {
+        ...fileConfig,
+        basePath: getSourceDir(fileConfig.src)
+    };
+    const filePaths = await glob(config.src);
+    const filePromises = filePaths.map(file => copyFile(config, file));
+    return Promise.all(filePromises);
+};
+
+/**
+ * 
+ * @param {Object} fileConfig config object from project
+ * @param {String} file path to file in src directory
+ * this method uses the source file path, removes the base src path to get the file name with any sub-directories
+ * it copies the file to the destination directory
+ * fse.copy will create directories in the destination if they do not exist
+ * @returns {Promise} promise representing status of file copy
+ */
 const copyFile = (fileConfig, file) => {
-    const srcFilepath = path.resolve(process.cwd(), fileConfig.src, file);
-    const destFilepath = path.resolve(process.cwd(), fileConfig.dest, file);
-    return fse.copyFile(srcFilepath, destFilepath);
+    const srcFilepath = path.resolve(process.cwd(), file);
+    const filePath = file.replace(fileConfig.basePath, '');
+    const destFilepath = path.resolve(process.cwd(), fileConfig.dest) + filePath;
+    return fse.copy(srcFilepath, destFilepath);
 };
 
 module.exports = skeletorStaticFileCopier = () => (

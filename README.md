@@ -40,7 +40,7 @@ The `directories` parameter is a list of objects detailing the directories to be
 **src**
 Type: `String`
 
-The path to the source directory to be copied.
+The path to the source directory to be copied. This path can contain globbing [syntax](https://github.com/sindresorhus/globby#globbing-patterns).
 
 **dest**
 
@@ -74,3 +74,6 @@ adds file system methods including ones that are not in the native `fs` module
 
 [path](https://nodejs.org/docs/latest/api/path.html)
 a module that provides utilities for working with file and directory paths
+
+[globby](https://github.com/sindresorhus/globby)
+a promised-based module that matches files using patterns
