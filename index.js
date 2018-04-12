@@ -40,14 +40,13 @@ const run = config => {
  */
 const getSourceDir = srcPath => {
     const srcPaths = srcPath.split(path.sep);
-    let retVal = srcPaths;
-    srcPaths.forEach((srcPath, indx) => {
-        if (!glob.hasMagic(srcPath)) {
-            const endIndx = indx + 1;
-            retVal = path.join(...srcPaths.slice(0, endIndx));
+    for (let indx = 0; indx < srcPaths.length; indx++) {
+        const srcPath = srcPaths[indx];
+        if (glob.hasMagic(srcPath)) {
+            return path.join(...srcPaths.slice(0, indx));
         }
-    });
-    return retVal;
+    }
+    return srcPath;
 };
 
 /**
@@ -78,7 +77,9 @@ const copyDirectory = async fileConfig => {
  */
 const copyFile = (fileConfig, file) => {
     const srcFilepath = path.resolve(process.cwd(), file);
-    const filePath = file.replace(fileConfig.basePath, '');
+    const filePath = fileConfig.basePath ?
+        file.replace(fileConfig.basePath, '') :
+        `/${file}`;
     const destFilepath = path.resolve(process.cwd(), fileConfig.dest) + filePath;
     return fse.copy(srcFilepath, destFilepath);
 };
