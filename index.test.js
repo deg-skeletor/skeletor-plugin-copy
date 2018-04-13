@@ -12,6 +12,13 @@ const errorResponse = {
     status: 'error',
     error: 'Config directories is not found or not an array.'
 };
+const logger = {
+    info: () => {},
+    error: () => {}
+};
+const options = {
+    logger
+};
 let fseInstance;
 let globby;
 
@@ -50,7 +57,7 @@ test('run() returns a complete status object', async () => {
     };
 
     expect.assertions(1);
-    const response = await skeletorStaticFileCopier().run(config);
+    const response = await skeletorStaticFileCopier().run(config, options);
     expect(response).toEqual(expectedResponse);
 });
 
@@ -58,7 +65,7 @@ describe('handles troublesome configurations', () => {
     test('run() handles malformed config object', async () => {
         const config = {};
 
-        const response = await skeletorStaticFileCopier().run(config);
+        const response = await skeletorStaticFileCopier().run(config, options);
         expect(response).toEqual(errorResponse);
     });
 
@@ -68,7 +75,7 @@ describe('handles troublesome configurations', () => {
             const config = {
                 directories: {}
             };
-            const response = await skeletorStaticFileCopier().run(config);
+            const response = await skeletorStaticFileCopier().run(config, options);
             expect(response).toEqual(errorResponse);
         });
 
@@ -76,7 +83,7 @@ describe('handles troublesome configurations', () => {
             const config = {
                 directories: 'test'
             };
-            const response = await skeletorStaticFileCopier().run(config);
+            const response = await skeletorStaticFileCopier().run(config, options);
             expect(response).toEqual(errorResponse);
         });
 
@@ -84,7 +91,7 @@ describe('handles troublesome configurations', () => {
             const config = {
                 directories: 4
             };
-            const response = await skeletorStaticFileCopier().run(config);
+            const response = await skeletorStaticFileCopier().run(config, options);
             expect(response).toEqual(errorResponse);
         });
 
@@ -92,7 +99,7 @@ describe('handles troublesome configurations', () => {
             const config = {
                 directories: false
             };
-            const response = await skeletorStaticFileCopier().run(config);
+            const response = await skeletorStaticFileCopier().run(config, options);
             expect(response).toEqual(errorResponse);
         });
     });
@@ -115,7 +122,7 @@ describe('handles troublesome configurations', () => {
 
         // expect.assertions(1);
         try {
-            await skeletorStaticFileCopier().run(config);
+            await skeletorStaticFileCopier().run(config, options);
         } catch (e) {
             expect(response).toEqual(expectedResponse);
         }
@@ -144,7 +151,7 @@ describe('copies directories', () => {
         const file1 = `${destFilepath1}/content1.txt`;
         const file2 = `${destFilepath1}/content2.txt`;
 
-        const response = await skeletorStaticFileCopier().run(config);
+        const response = await skeletorStaticFileCopier().run(config, options);
         expect(response).toEqual(expectedResponse);
         expect(fseInstance.mockDest).toContain(file1);
         expect(fseInstance.mockDest).toContain(file2);
@@ -174,7 +181,7 @@ describe('copies directories', () => {
         const file2 = `${destFilepath1}/content2.txt`;
         const file3 = `${destFilepath2}/content1.txt`;
 
-        const response = await skeletorStaticFileCopier().run(config);
+        const response = await skeletorStaticFileCopier().run(config, options);
         expect(response).toEqual(expectedResponse);
         expect(fseInstance.mockDest).toContain(file1);
         expect(fseInstance.mockDest).toContain(file2);
@@ -210,7 +217,7 @@ describe('copies directories', () => {
                 ]
             };
 
-            const response = await skeletorStaticFileCopier().run(config);
+            const response = await skeletorStaticFileCopier().run(config, options);
             expect(response).toEqual(expectedResponse);
             expect(fseInstance.mockDest).toContain(expectedPath);
         });
@@ -227,7 +234,7 @@ describe('copies directories', () => {
                 ]
             };
 
-            const response = await skeletorStaticFileCopier().run(config);
+            const response = await skeletorStaticFileCopier().run(config, options);
             expect(response).toEqual(expectedResponse);
             expect(fseInstance.mockDest).toContain(expectedPath);
         });
@@ -244,7 +251,7 @@ describe('copies directories', () => {
                 ]
             };
 
-            const response = await skeletorStaticFileCopier().run(config);
+            const response = await skeletorStaticFileCopier().run(config, options);
             expect(response).toEqual(expectedResponse);
             expect(fseInstance.mockDest).toContain(expectedPath);
         });

@@ -2,8 +2,7 @@ const fse = require('fs-extra');
 const path = require('path');
 const glob = require('globby');
 
-const run = config => {
-
+const run = (config, {logger}) => {
     if (config.directories && Array.isArray(config.directories)) {
         const promises = config.directories.map(directoryConfig => copyDirectory(directoryConfig));
 
@@ -11,13 +10,14 @@ const run = config => {
             .then(() => {
                 const descriptor = config.directories.length === 1 ? 'directory' : 'directories';
                 const message = `${config.directories.length} ${descriptor} processed`;
+                logger.info(message);
                 return {
                     status: 'complete',
                     message: message
                 };
             })
             .catch(error => {
-                console.log(error);
+                logger.error(error);
                 return {
                     status: 'error',
                     error: error
