@@ -2,7 +2,7 @@
 
 const path = jest.genMockFromModule('path');
 
-const sep = process.platform === 'win32' ? '\\' : '/';
+const sep = '/';
 
 const resolve = (dir, filepath) => filepath;
 
