@@ -2,18 +2,11 @@
 
 const path = jest.genMockFromModule('path');
 
-const resolve = (dir, filepath) => {
-	return filepath;
-};
+const sep = '/';
 
-const sep = () => {
-	if (process.platform === 'win32') {
-		return '\\';
-	}
-	return '/';
-};
+const resolve = (dir, filepath) => filepath;
 
-const join = () => arguments.join(sep());
+const join = (...args) => args.join(sep);
 
 path.resolve = resolve;
 path.sep = sep;
