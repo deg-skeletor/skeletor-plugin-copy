@@ -11,7 +11,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/deg-skeletor/skeletor-static-asset-copy.git"
+    "url": "git+https://github.com/deg-skeletor/skeletor-plugin-copy.git"
   },
   "peerDependencies": {
     "skeletor-core": "git+https://github.com/deg-skeletor/skeletor-core.git"
