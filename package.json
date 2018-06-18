@@ -1,28 +1,35 @@
 {
-  "name": "skeletor-plugin-copy",
-  "version": "0.2.0",
-  "description": "A Skeletor plugin to copy static assets from one directory to another.",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest",
-    "lint": "eslint index.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/deg-skeletor/skeletor-plugin-copy.git"
-  },
-  "peerDependencies": {
-    "skeletor-core": "git+https://github.com/deg-skeletor/skeletor-core.git"
-  },
-  "dependencies": {
-    "fs-extra": "^5.0.0",
-    "globby": "^8.0.1",
-    "path": "^0.12.7"
-  },
-  "devDependencies": {
-    "eslint": "^4.17.0",
-    "jest": "^22.2.1"
-  }
+	"name": "@skeletor/plugin-copy",
+	"version": "0.2.0",
+	"description": "A Skeletor plugin to copy static assets from one directory to another.",
+	"main": "index.js",
+	"scripts": {
+		"test": "jest",
+		"lint": "eslint index.js"
+	},
+	"author": "Anna Scheuler <scheul93@gmail.com>",
+	"license": "ISC",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/deg-skeletor/skeletor-plugin-copy.git"
+	},
+	"peerDependencies": {
+		"skeletor-core": "git+https://github.com/deg-skeletor/skeletor-core.git"
+	},
+	"dependencies": {
+		"fs-extra": "^5.0.0",
+		"globby": "^8.0.1",
+		"path": "^0.12.7"
+	},
+	"devDependencies": {
+		"eslint": "^4.17.0",
+		"jest": "^22.2.1"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"skeletor",
+		"skeletor-plugin"
+	]
 }
