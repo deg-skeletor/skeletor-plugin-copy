@@ -257,4 +257,46 @@ describe('copies directories', () => {
         });
     });
 
+    describe('single file copy', () => {
+        test('single file explicit path', async () => {
+            const config = {
+                directories: [
+                    {
+                        src: 'src/skeletor/index.html',
+                        dest: destFilepath1
+                    }
+                ]
+            };
+            const file1 = `${destFilepath1}/index.html`;
+
+            return skeletorStaticFileCopier().run(config, options).then(() => {
+                expect(fseInstance.mockDest).toContain(file1);
+            });
+        });
+
+        test('single file in globbed path', async () => {
+            const baseDir = 'src/skeletor/app';
+            const globbingSrc = 'src/skeletor/*/index.html';
+            const expectedPath = 'dest/skeletor/app/index.html';
+            const config = {
+                directories: [
+                    {
+                        src: globbingSrc,
+                        dest: 'dest/skeletor'
+                    }
+                ]
+            };
+            fseInstance._setMockSrc({
+                [baseDir]: 'index.html'
+            });
+            globby._setMockSrc({
+                [baseDir]: 'index.html'
+            });
+
+            return skeletorStaticFileCopier().run(config, options).then(() => {
+                expect(fseInstance.mockDest).toContain(expectedPath);
+            });
+
+        });
+    });
 });
