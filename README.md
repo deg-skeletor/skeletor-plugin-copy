@@ -1,4 +1,4 @@
-# Skeletor Sample Plugin
+# Skeletor Copy Plugin
 [![Build Status](https://travis-ci.org/deg-skeletor/skeletor-plugin-copy.svg?branch=master)](https://travis-ci.org/deg-skeletor/skeletor-plugin-copy)
 
 The purpose of this plugin is to copy static assets from one directory to another.
