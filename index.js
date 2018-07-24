@@ -4,7 +4,16 @@ const glob = require('globby');
 
 const run = (config, {logger}) => {
     if (config.directories && Array.isArray(config.directories)) {
-        const promises = config.directories.map(directoryConfig => copyDirectory(directoryConfig));
+        const promises = config.directories.map(directoryConfig => {
+            if (path.extname(directoryConfig.src) && !glob.hasMagic(directoryConfig.src)) {
+                const fileConfig = {
+                    ...directoryConfig,
+                    basePath: path.dirname(directoryConfig.src)
+                };
+                return copyFile(fileConfig, fileConfig.src);
+            }
+            return copyDirectory(directoryConfig);
+        });
 
         return Promise.all(promises)
             .then(() => {

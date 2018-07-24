@@ -1,7 +1,7 @@
 'use strict';
 
 let mockSrcPaths = [];
-const mockGlobbyRegEx = RegExp(/\W+/g);
+const mockGlobbyRegEx = RegExp(/[\*?\{\}\!]+/g);
 
 /**
  * 
