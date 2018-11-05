@@ -104,7 +104,7 @@ describe('handles troublesome configurations', () => {
         });
     });
 
-    test('errors if src is not a directory', async () => {
+    test('errors if src is a directory that does not exist', async () => {
         const fakeDirectory = 'test/skeletor';
         const config = {
             directories: [
@@ -263,6 +263,22 @@ describe('copies directories', () => {
                 directories: [
                     {
                         src: 'src/skeletor/index.html',
+                        dest: destFilepath1
+                    }
+                ]
+            };
+            const file1 = `${destFilepath1}/index.html`;
+
+            return skeletorStaticFileCopier().run(config, options).then(() => {
+                expect(fseInstance.mockDest).toContain(file1);
+            });
+        });
+
+        test('single file explicit path in same directory', async () => {
+            const config = {
+                directories: [
+                    {
+                        src: 'index.html',
                         dest: destFilepath1
                     }
                 ]

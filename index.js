@@ -86,7 +86,7 @@ const copyDirectory = async fileConfig => {
  */
 const copyFile = (fileConfig, file) => {
     const srcFilepath = path.resolve(process.cwd(), file);
-    const filePath = fileConfig.basePath ?
+    const filePath = fileConfig.basePath && fileConfig.basePath !== '.' ?
         file.replace(fileConfig.basePath, '') :
         `${path.sep}${file}`;
     const destFilepath = path.resolve(process.cwd(), fileConfig.dest) + filePath;
