@@ -2,42 +2,93 @@ const fse = require('fs-extra');
 const path = require('path');
 const glob = require('globby');
 
-const run = (config, {logger}) => {
+const run = (config, {logger, source}) => {
     if (config.directories && Array.isArray(config.directories)) {
-        const promises = config.directories.map(directoryConfig => {
-            if (path.extname(directoryConfig.src) && !glob.hasMagic(directoryConfig.src)) {
-                const fileConfig = {
-                    ...directoryConfig,
-                    basePath: path.dirname(directoryConfig.src)
-                };
-                return copyFile(fileConfig, fileConfig.src);
-            }
-            return copyDirectory(directoryConfig);
-        });
+        if (source && source.filepath) {
+            return copyTargetedFile(config, logger, source.filepath);
+        }
 
-        return Promise.all(promises)
-            .then(() => {
-                const descriptor = config.directories.length === 1 ? 'directory' : 'directories';
-                const message = `${config.directories.length} ${descriptor} processed`;
-                logger.info(message);
-                return {
-                    status: 'complete',
-                    message: message
-                };
-            })
-            .catch(error => {
-                logger.error(error);
-                return {
-                    status: 'error',
-                    error: error
-                };
-            });
+        return copyAllFiles(config, logger);
     }
 
     return Promise.resolve({
         status: 'error',
         error: 'Config directories is not found or not an array.'
     });
+};
+
+const copyTargetedFile = (config, logger, filepath) => {
+    const dirPromises = config.directories.map(dir => glob(dir.src));
+
+    return Promise.all(dirPromises).then(responses => {
+        let storedIndex = -1;
+        for(let i = 0; i < responses.length; i++) {
+            if (responses[i].indexOf(filepath) > -1) {
+                storedIndex = i;
+                break;
+            }
+        }
+
+        if (storedIndex > -1) {
+            const targetConfig = {
+                ...config.directories[storedIndex],
+                basePath: getSourceDir(config.directories[storedIndex].src)
+            };
+
+            return copyFile(targetConfig, filepath)
+                .then(() => {
+                    const message = `${filepath} processed`;
+                    logger.info(message);
+                    return {
+                        status: 'complete',
+                        message: message
+                    };
+                })
+                .catch(error => {
+                    logger.error(error);
+                    return {
+                        status: 'error',
+                        error: error
+                    };
+                });
+        }
+        return Promise.resolve({
+            status: 'error',
+            error: 'Could not find config for filepath.'
+        });
+
+    });
+};
+
+const copyAllFiles = (config, logger) => {
+    const promises = config.directories.map(directoryConfig => {
+        if (path.extname(directoryConfig.src) && !glob.hasMagic(directoryConfig.src)) {
+            const fileConfig = {
+                ...directoryConfig,
+                basePath: path.dirname(directoryConfig.src)
+            };
+            return copyFile(fileConfig, fileConfig.src);
+        }
+        return copyDirectory(directoryConfig);
+    });
+
+    return Promise.all(promises)
+        .then(() => {
+            const descriptor = config.directories.length === 1 ? 'directory' : 'directories';
+            const message = `${config.directories.length} ${descriptor} processed`;
+            logger.info(message);
+            return {
+                status: 'complete',
+                message: message
+            };
+        })
+        .catch(error => {
+            logger.error(error);
+            return {
+                status: 'error',
+                error: error
+            };
+        });
 };
 
 /**

@@ -1,6 +1,6 @@
 {
 	"name": "@deg-skeletor/plugin-copy",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"description": "A Skeletor plugin to copy static assets from one directory to another.",
 	"main": "index.js",
 	"scripts": {
@@ -31,5 +31,11 @@
 	"keywords": [
 		"skeletor",
 		"skeletor-plugin"
-	]
+	],
+	"jest": {
+		"testPathIgnorePatterns": [
+			"/node_modules/"
+		],
+		"testURL": "http://localhost"
+	}
 }

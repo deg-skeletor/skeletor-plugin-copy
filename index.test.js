@@ -316,3 +316,83 @@ describe('copies directories', () => {
         });
     });
 });
+
+describe('copies targeted files', () => {
+
+    it('should return a status message', async() => {
+        const config = {
+            directories: [
+                {
+                    src: srcFilepath1,
+                    dest: destFilepath1
+                }
+            ]
+        };
+
+        const options2 = {
+            logger,
+            source: {
+                filepath: 'src/skeletor/content2.txt'
+            }
+        };
+        const expectedResponse = {
+            status: 'complete',
+            message: `${options2.source.filepath} processed`
+        };
+        const response = await skeletorStaticFileCopier().run(config, options2);
+        expect(response).toEqual(expectedResponse);
+    });
+
+    it('should copy file if path passed in options', async () => {
+        const config = {
+            directories: [
+                {
+                    src: srcFilepath1,
+                    dest: destFilepath1
+                }
+            ]
+        };
+
+        const options2 = {
+            logger,
+            source: {
+                filepath: 'src/skeletor/content2.txt'
+            }
+        };
+        const expectedResponse = {
+            status: 'complete',
+            message: `${options2.source.filepath} processed`
+        };
+        const file2 = `${destFilepath1}/content2.txt`;
+
+        const response = await skeletorStaticFileCopier().run(config, options2);
+        expect(response).toEqual(expectedResponse);
+        expect(fseInstance.mockDest).toContain(file2);
+    });
+
+    it('should error if cannot find matching config for filepath', async() => {
+        const config = {
+            directories: [
+                {
+                    src: srcFilepath1,
+                    dest: destFilepath1
+                }
+            ]
+        };
+
+        const options2 = {
+            logger,
+            source: {
+                filepath: 'src/skel2/content2.txt'
+            }
+        };
+        const expectedResponse = {
+            status: 'error',
+            error: 'Could not find config for filepath.'
+        };
+
+        const response = await skeletorStaticFileCopier().run(config, options2);
+        expect(response).toEqual(expectedResponse);
+    });
+
+});
