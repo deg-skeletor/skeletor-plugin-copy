@@ -31,5 +31,11 @@
 	"keywords": [
 		"skeletor",
 		"skeletor-plugin"
-	]
+	],
+	"jest": {
+		"testPathIgnorePatterns": [
+			"/node_modules/"
+		],
+		"testURL": "http://localhost"
+	}
 }
