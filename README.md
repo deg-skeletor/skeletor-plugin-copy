@@ -70,12 +70,12 @@ Type: `String`
 
 Contains any additional information regarding the status of the plugin. If the plugin executed successfully, this property could include information about what the plugin accomplished. If the plugin encountered an error, this property could include error details. 
 
+### Use in the Skeletor Ecosystem
+If used with the [Skeletor watch plugin](https://github.com/deg-skeletor/skeletor-plugin-watch), the copy plugin will do a targeted copy of the changed static file, instead of copying over all static files.
+
 ## Required Add-Ins
-[fs-extra](https://github.com/jprichardson/node-fs-extra)
-adds file system methods including ones that are not in the native `fs` module
+[fs-extra](https://github.com/jprichardson/node-fs-extra): adds file system methods including ones that are not in the native `fs` module
 
-[path](https://nodejs.org/docs/latest/api/path.html)
-a module that provides utilities for working with file and directory paths
+[path](https://nodejs.org/docs/latest/api/path.html): a module that provides utilities for working with file and directory paths
 
-[globby](https://github.com/sindresorhus/globby)
-a promised-based module that matches files using patterns
+[globby](https://github.com/sindresorhus/globby): a promised-based module that matches files using patterns
