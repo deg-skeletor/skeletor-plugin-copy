@@ -1,6 +1,6 @@
 {
 	"name": "@deg-skeletor/plugin-copy",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "A Skeletor plugin to copy static assets from one directory to another.",
 	"main": "index.js",
 	"scripts": {
@@ -13,6 +13,9 @@
 		"type": "git",
 		"url": "git+https://github.com/deg-skeletor/skeletor-plugin-copy.git"
 	},
+	"files": [
+		"index.js"
+	],
 	"peerDependencies": {
 		"@deg-skeletor/core": "^1.0.0"
 	},
@@ -22,8 +25,8 @@
 		"path": "^0.12.7"
 	},
 	"devDependencies": {
-		"eslint": "^4.19.1",
-		"jest": "^24.8.0"
+		"eslint": "7.18.0",
+		"jest": "26.6.3"
 	},
 	"publishConfig": {
 		"access": "public"
